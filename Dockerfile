@@ -1,7 +1,7 @@
-# Build:
-# docker build -t piotrbalbierz/webschool:v3 .
+# Build: docker build -t piotrbalbierz/webschool:v_1.0 .
 
-FROM node:8.11-slim
+# Temporary image to build production version of client
+FROM node:8.11-slim AS build
 
 # Install required tools
 RUN apt-get update \
@@ -28,13 +28,20 @@ RUN cd /srv/webSchool/wS_client \
     && cp -R /srv/webSchool/wS_client/dist/* /srv/webSchool/wS_server/public/ \
     && rm -rf /srv/webSchool/wS_client
 
+# Final production image
+FROM node:8.11-slim
+
+# Copy app files from build image
+COPY --from=build --chown=node /srv/webSchool /srv/webSchool/
+
 # Set environmental variables
 ENV NODE_ENV='production' \
     PORT=3000 \
     MONGODB_URI='' \
     SECRET=''
 
-# Set workdir and install server modules
+# Switch to non-root user, set workdir and install server modules
+USER node
 WORKDIR /srv/webSchool/wS_server
 RUN npm install
 
