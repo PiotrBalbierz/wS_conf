@@ -15,7 +15,7 @@ services:
     depends_on:
       - db
     environment:
-      - MONGODB_URI=mongodb://ws4dm:wspas5w0rd@ws_database:27017/admin
+      - MONGODB_URI=mongodb://wsadm:wspassword@ws_database:27017/admin
       - SECRET='webSch00l'
     ports:
       - "3000:3000"
@@ -42,8 +42,8 @@ services:
       placement:
         constraints: [node.role == manager]
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=ws4dm
-      - MONGO_INITDB_ROOT_PASSWORD=wspas5w0rd
+      - MONGO_INITDB_ROOT_USERNAME=wsadm
+      - MONGO_INITDB_ROOT_PASSWORD=wspassword
     networks:
       wSnet:
         aliases:
