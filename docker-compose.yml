@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  
+  app:
+    image: piotrbalbierz/webschool:v_1.0
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 100M
+    depends_on:
+      - db
+    environment:
+      - MONGODB_URI=mongodb://ws4dm:wspas5w0rd@ws_database:27017/admin
+      - SECRET='webSch00l'
+    ports:
+      - "3000:3000"
+    networks:
+      - wSnet
+  
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - wSnet
+  
+  db:
+    image: mongo:3.6-jessie
+    ports:
+      - "27017:27017"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=ws4dm
+      - MONGO_INITDB_ROOT_PASSWORD=wspas5w0rd
+    networks:
+      wSnet:
+        aliases:
+          - ws_database
+
+networks:
+  wSnet:
+
+# Sprawdz
+ # volumes:
+      # - "/home/docker/data:/data"
+# command: 
